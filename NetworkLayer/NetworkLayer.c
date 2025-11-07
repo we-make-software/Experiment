@@ -5,19 +5,15 @@ CBuildSignature(void,InitDataLinkLayer,(struct DataLinkLayer*dataLinkLayer)){
 CBuildSignature(void,FreeDataLinkLayer,(struct DataLinkLayer*dataLinkLayer)){
 
 }
-
-
-
-CBuildInit{
-
-    return 0;
+CBuildSignature(DataLinkLayerPacketActionType,Receiver,(struct sk_buff*skb,void*dataLinkLayer)){
+    return DataLinkLayerPacketReceiveForOtherSoftware;
 }
 
-CBuildExit{
+CBuildInit
+CBuildReturnZero
+CBuildExit 
+CBuildReturnZero
 
-    return 0;
-}
-
-CBuildStart(DataLinkLayer)
-
+CBuildStart(NetworkLayer)
+    CBuildBind(Receiver)
 CBuildEnd

@@ -5,12 +5,12 @@ struct DataLinkLayer{
 
 };
 
+    #define CBuildReturnZero { return 0; }
 
     HBuildStart(NetworkLayer)
         HBuildSignature(DataLinkLayerPacketActionType,Receiver,(struct sk_buff*skb,void*dataLinkLayer)) 
         HBuildSignature(void,InitDataLinkLayer,(struct DataLinkLayer*dataLinkLayer))
         HBuildSignature(void,FreeDataLinkLayer,(struct DataLinkLayer*dataLinkLayer))
-
     HBuildEnd
 
      #define CBuildConnectNetworkLayer \
