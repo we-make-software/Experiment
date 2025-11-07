@@ -1,6 +1,4 @@
 /**
- * DataLinkLayer.h
- *
  * Description:
  * This module implements a basic Data Link Layer abstraction for Ethernet devices.
  * It provides a simple, high-performance interface to create, manipulate, and send

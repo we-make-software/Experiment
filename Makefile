@@ -22,3 +22,15 @@ unload:
 
 spy:
 	dmesg -w
+
+
+push:
+	@echo "Enter commit message:"; \
+	read msg; \
+	if [ -n "$$msg" ]; then \
+		git add . && \
+		git commit -m "$$msg" && \
+		git push -u origin main; \
+	else \
+		echo "Commit cancelled: no message provided."; \
+	fi

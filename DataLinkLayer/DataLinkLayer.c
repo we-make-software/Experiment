@@ -43,6 +43,7 @@ static LIST_HEAD(DLSourcePoolCreators);
 
 CBuildSignature(void,DLDestPool_Free,(struct DataLinkLayerDestination *dlld)){
     list_del(&dlld->list);
+    GetNetworkLayer()->FreeDataLinkLayer(&dlld->ddl);
     cancel_work_sync(&dlld->bufferPool.creator);
     INIT_WORK(&dlld->bufferPool.creator,NULL);
     cancel_delayed_work_sync(&dlld->bufferPool.decrease);
