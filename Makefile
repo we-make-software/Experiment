@@ -1,4 +1,4 @@
-MODULES := System/System DataLinkLayer/DataLinkLayer Run/Run
+MODULES := System/System SecondMemoryTimeout/SecondMemoryTimeout MinuteMemoryTimeout/MinuteMemoryTimeout Run/Run
 obj-m := $(addsuffix .o, $(MODULES))
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
@@ -11,13 +11,15 @@ clean:
 
 load:
 	insmod System/System.ko
-	insmod DataLinkLayer/DataLinkLayer.ko
+	insmod SecondMemoryTimeout/SecondMemoryTimeout.ko
+	insmod MinuteMemoryTimeout/MinuteMemoryTimeout.ko
 	insmod Run/Run.ko
 
 unload:
 	@echo "Unloading modules..."
 	@rmmod Run
-	@rmmod DataLinkLayer
+	@rmmod SecondMemoryTimeout
+	@rmmod MinuteMemoryTimeout
 	@rmmod System
 
 spy:
