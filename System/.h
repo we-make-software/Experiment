@@ -20,10 +20,14 @@ typedef enum{
         extern void*SystemGetApplicationProgrammingInterface(unsigned char*name);
         extern void SystemBuildRemover(unsigned char*name);
         extern SystemProcessType*GetSystemProcess(void);
-
-        #define STRINGIFY(x) #x 
-        #define TOSTRING(x) STRINGIFY(x)
-
+        extern void NetworkInit(void(*function)(void));
+        struct EventFunctionTimeout{
+            void*data;
+            void(*function)(void*);
+            struct list_head lh;
+        };
+        #define Struct static struct      
+        
         #define HBuildStart(description)\
             struct ApplicationProgrammingInterface##description{
 
@@ -63,7 +67,7 @@ typedef enum{
                 .InitState=SystemGetInitStateByApplicationProgrammingInterface,.ExitState=SystemGetExitStateByApplicationProgrammingInterface}),SystemBuildInitFunction,SystemBuildExitFunction);}
 
         #define CBuildConnectApplicationProgrammingInterface(description) \
-            static struct ApplicationProgrammingInterface##description*Get##description(void) { \
+            CBuildSignature(struct ApplicationProgrammingInterface##description*,Get##description,(void)){ \
                 static struct ApplicationProgrammingInterface##description*api=NULL;\
                 if(!api)\
                     api=(struct ApplicationProgrammingInterface##description*)SystemGetApplicationProgrammingInterface(#description);\

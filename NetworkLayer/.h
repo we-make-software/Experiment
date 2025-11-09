@@ -2,14 +2,16 @@
 #define NetworkLayer_h
 #include "../DataLinkLayer/.h"
 struct DataLinkLayer{
-
+    unsigned char Address[6];
+    struct MinuteMemoryTimeoutRecord mmtr; 
+    struct mutex l;
 };
 
 
     HBuildStart(NetworkLayer)
-        HBuildSignature(DataLinkLayerPacketActionType,Receiver,(struct sk_buff*skb,void*dataLinkLayer)) 
         HBuildSignature(void,InitDataLinkLayer,(struct DataLinkLayer*dataLinkLayer))
         HBuildSignature(void,FreeDataLinkLayer,(struct DataLinkLayer*dataLinkLayer))
+        HBuildSignature(void,ReceiverDataLinkLayer,(struct sk_buff*skb,struct DataLinkLayer*dataLinkLayer))
     HBuildEnd
 
      #define CBuildConnectNetworkLayer \

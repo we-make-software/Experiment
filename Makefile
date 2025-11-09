@@ -1,4 +1,4 @@
-MODULES := System/System SecondMemoryTimeout/SecondMemoryTimeout MinuteMemoryTimeout/MinuteMemoryTimeout Run/Run
+MODULES := System/System DataLinkLayer/DataLinkLayer SecondMemoryTimeout/SecondMemoryTimeout MinuteMemoryTimeout/MinuteMemoryTimeout Run/Run
 obj-m := $(addsuffix .o, $(MODULES))
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)

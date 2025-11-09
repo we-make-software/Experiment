@@ -82,9 +82,13 @@ Void SystemExit(void){
     }
 }
 static LinuxPowerStatusType LinuxPowerStatus=PowerStatusOn;
+
+static void(*networkStart)(void)=NULL;
+DefaultExportSymbol(void,NetworkInit,(void(*function)(void))){
+    networkStart=function;
+}
 DefaultExportSymbol(void,LinuxStart,(void)){
-        printk(KERN_INFO "Run module loaded: Hello from kernel!\n");
-        LinuxPowerStatus=PowerStatusOn;
+    LinuxPowerStatus=PowerStatusOn;
     while(!list_empty(&InitPayloadList)){   
         struct FunctionPayload *entry, *tmp;
         list_for_each_entry_safe(entry,tmp,&InitPayloadList,List) {
@@ -97,6 +101,8 @@ DefaultExportSymbol(void,LinuxStart,(void)){
         }
     }
     SystemProcess=SystemProcessComplete;
+    networkStart();
+    networkStart=NULL;
 }  
 DefaultExportSymbol(void,SystemInit,(unsigned char*name,void*ApplicationProgrammingInterface,int(*Init)(int),int(*Exit)(int))){
     struct ApplicationProgrammingInterfacePayload*applicationProgrammingInterfacePayload=kmalloc(sizeof(struct ApplicationProgrammingInterfacePayload),GFP_KERNEL);
