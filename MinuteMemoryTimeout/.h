@@ -1,7 +1,6 @@
 #ifndef MinuteMemoryTimeout_H
 #define MinuteMemoryTimeout_H
 #include "../System/.h"
-#include <linux/slab.h>  
     struct MinuteMemoryTimeoutRecord{
         struct list_head timer,binding,evt;   
         struct work_struct work; 

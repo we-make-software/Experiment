@@ -1,5 +1,6 @@
 #ifndef DataLinkLayer_h
 #define DataLinkLayer_h
+#include "../NetworkLayer/.h"
 #include "../SecondMemoryTimeout/.h"
 #include "../MinuteMemoryTimeout/.h"
 #include <linux/ethtool.h>
@@ -15,7 +16,8 @@
 #include <linux/udp.h>
 
     HBuildStart(DataLinkLayer)
-    
+        HBuildSignature(struct sk_buff*, New, (void*dataLinkLayer))
+        HBuildSignature(void,SetEthertype,(struct sk_buff* skb,u16 type))
     HBuildEnd
 
     #define CBuildConnectDataLinkLayer \

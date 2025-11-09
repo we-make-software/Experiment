@@ -1,6 +1,6 @@
-#include "../Run/.h"
 #ifndef System_h
 #define System_h
+#include "../Run/.h"
 typedef enum {
     PowerStatusOff=0,
     PowerStatusOn=1,

@@ -6,15 +6,15 @@ CBuildSignature(void,FreeDataLinkLayer,(struct DataLinkLayer*dataLinkLayer)){
 
 }
 CBuildSignature(void,ReceiverDataLinkLayer,(struct sk_buff*skb,struct DataLinkLayer*dataLinkLayer)){
-
+ printk(KERN_INFO "Hello world\n");
 }
 CBuildInit
 CBuildReturnZero
 CBuildExit 
 CBuildReturnZero
 
-CBuildStart(NetworkLayer)
+CStart(NetworkLayer,
     CBuildBind(InitDataLinkLayer)
     CBuildBind(FreeDataLinkLayer)
     CBuildBind(ReceiverDataLinkLayer)
-CBuildEnd
+)

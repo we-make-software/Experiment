@@ -11,15 +11,19 @@ clean:
 
 load:
 	insmod System/System.ko
-	insmod SecondMemoryTimeout/SecondMemoryTimeout.ko
+	insmod DataLinkLayer/DataLinkLayer.ko
+	insmod NetworkLayer/NetworkLayer.ko
 	insmod MinuteMemoryTimeout/MinuteMemoryTimeout.ko
+	insmod SecondMemoryTimeout/SecondMemoryTimeout.ko
 	insmod Run/Run.ko
 
 unload:
 	@echo "Unloading modules..."
 	@rmmod Run
-	@rmmod SecondMemoryTimeout
 	@rmmod MinuteMemoryTimeout
+	@rmmod SecondMemoryTimeout
+	@rmmod NetworkLayer
+	@rmmod DataLinkLayer
 	@rmmod System
 
 spy:

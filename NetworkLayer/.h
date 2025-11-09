@@ -7,12 +7,21 @@ struct DataLinkLayer{
     struct mutex l;
 };
 
-
-    HBuildStart(NetworkLayer)
-        HBuildSignature(void,InitDataLinkLayer,(struct DataLinkLayer*dataLinkLayer))
-        HBuildSignature(void,FreeDataLinkLayer,(struct DataLinkLayer*dataLinkLayer))
-        HBuildSignature(void,ReceiverDataLinkLayer,(struct sk_buff*skb,struct DataLinkLayer*dataLinkLayer))
-    HBuildEnd
+    #define HStart(description,signature)\
+        HBuildStart(description)\
+        signature\
+        HBuildEnd
+    
+    #define CStart(description,signature)\
+        CBuildStart(description)\
+            signature\
+        CBuildEnd    
+    
+    HStart(NetworkLayer,
+        HBuildSignature(void,InitDataLinkLayer,(struct DataLinkLayer*))
+        HBuildSignature(void,FreeDataLinkLayer,(struct DataLinkLayer*))
+        HBuildSignature(void,ReceiverDataLinkLayer,(struct sk_buff*,struct DataLinkLayer*))
+    )
 
      #define CBuildConnectNetworkLayer \
         CBuildConnectApplicationProgrammingInterface(NetworkLayer)

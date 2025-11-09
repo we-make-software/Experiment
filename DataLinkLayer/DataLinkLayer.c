@@ -1,4 +1,5 @@
 #include "../NetworkLayer/.h"
+static u8 DeviceTimeoutMinute=10;
 struct Device{
     struct DataLinkLayer dll;
     struct list_head lh;
@@ -11,7 +12,8 @@ struct Hardware{
 };
 static LIST_HEAD(Hardwares);
 CBuildConnectMinuteMemoryTimeout
-CBuildSignature(struct sk_buff*, New, (struct DataLinkLayer *dll)) {
+CBuildSignature(struct sk_buff*, New, (void*dataLinkLayer)) {
+    struct DataLinkLayer* dll = (struct DataLinkLayer*)dataLinkLayer;
     struct sk_buff*skb=alloc_skb(1514,GFP_KERNEL);
     if(!skb)
         return NULL;
@@ -22,6 +24,9 @@ CBuildSignature(struct sk_buff*, New, (struct DataLinkLayer *dll)) {
     memcpy(dskb+6,d->h->pt.dev->dev_addr, 6);
     GetMinuteMemoryTimeout()->Update(&dll->mmtr);
     return skb;
+}
+CBuildSignature(void,SetEthertype,(struct sk_buff* skb,u16 type)){
+    *(u16*)skb_put(skb, 2)=type;
 }
 CBuildConnectNetworkLayer
 CBuildSignature(struct Device*,SearchDevice,(struct sk_buff*skb,struct Hardware*h)){
@@ -59,11 +64,11 @@ CBuildSignature(void,InitDevice,(struct sk_buff*skb,struct Hardware*h)){
     INIT_LIST_HEAD(&d->lh);
     mutex_init(&d->dll.l);
     memcpy(d->dll.Address, eth_hdr(skb)->h_source, 6);
-    GetMinuteMemoryTimeout()->New(&d->dll.mmtr, 10, ExitDevice);
+    GetMinuteMemoryTimeout()->New(&d->dll.mmtr, &DeviceTimeoutMinute, ExitDevice);
     GetNetworkLayer()->InitDataLinkLayer(&d->dll);
     list_add(&d->lh, &h->dlh);
     mutex_unlock(&h->l);
-    DeviceReceiver(skb,d);
+    GetNetworkLayer()->ReceiverDataLinkLayer(skb,&d->dll);
 }
 CBuildSignature(void,HardwareReceiver,(struct sk_buff*skb,struct Hardware*h)){
     struct Device*d=SearchDevice(skb,h);
@@ -169,7 +174,6 @@ CBuildInit{
     NetworkInit(SynchronizeNet);
     return 0;
 }
-
 CBuildExit{
     struct Hardware *h,*tmp;
     list_for_each_entry_safe(h, tmp, &Hardwares, lh) {
@@ -181,6 +185,7 @@ CBuildExit{
     kmem_cache_destroy(ForwardReceiverContentCachie);  
     return 0;
 }
-
 CBuildStart(DataLinkLayer)
+    CBuildBind(New)
+    CBuildBind(SetEthertype)
 CBuildEnd

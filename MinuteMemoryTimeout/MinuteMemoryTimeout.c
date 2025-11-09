@@ -1,4 +1,5 @@
 #include ".h"
+CBuildConnectMinuteMemoryTimeout
 struct MinuteMemoryTimeoutRecordBinding{
     struct list_head bind;
     struct MinuteMemoryTimeoutRecord*root;
@@ -7,8 +8,6 @@ Struct kmem_cache*TimeOutBindingCachie,*evtCachie;
 Struct list_head Timer[60];
 Struct delayed_work DelayedWork;
 static u8 LastTick;
-
-
 CBuildSignature(void,ExtraTrigger,(struct MinuteMemoryTimeoutRecord* root)){
     struct EventFunctionTimeout *entry, *tmp;
     mutex_lock(&root->lock);
@@ -106,6 +105,10 @@ CBuildSignature(void,Disable,(struct MinuteMemoryTimeoutRecord*root)){
     list_del_init(&root->timer);
     mutex_unlock(&root->lock);
 }
+CBuildSignature(void,Update,(struct MinuteMemoryTimeoutRecord*root)){
+    GetMinuteMemoryTimeout()->Tick(root, &root->tick); 
+}
+
 CBuildSignature(void,Tick,(struct MinuteMemoryTimeoutRecord*root,u8*tick)){
     if(!LinuxGetPowerStatus()||!root||!tick||*tick>60)return;
     Disable(root);
@@ -115,10 +118,7 @@ CBuildSignature(void,Tick,(struct MinuteMemoryTimeoutRecord*root,u8*tick)){
     mutex_unlock(&root->lock);  
     struct MinuteMemoryTimeoutRecordBinding *iter, *tmp;
     list_for_each_entry_safe(iter, tmp, &root->binding, bind)
-        Tick(iter->root, &iter->root->tick);
-}
-CBuildSignature(void,Update,(struct MinuteMemoryTimeoutRecord*root)){
-    Tick(root, &root->tick); 
+        Update(iter->root);
 }
 CBuildSignature(void,Function,(struct MinuteMemoryTimeoutRecord*root,void(*function)(struct MinuteMemoryTimeoutRecord*))){
     root->function=function;  

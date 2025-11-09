@@ -1,4 +1,5 @@
 #include ".h"
+CBuildConnectSecondMemoryTimeout
 struct SecondMemoryTimeoutRecordBinding{
     struct list_head bind;
     struct SecondMemoryTimeoutRecord*root;
@@ -99,7 +100,10 @@ CBuildSignature(void,Disable,(struct SecondMemoryTimeoutRecord*root)){
     list_del_init(&root->timer);
     mutex_unlock(&root->lock);
 }
-CBuildSignature(void,Tick,(struct SecondMemoryTimeoutRecord*root,u8*tick)){
+CBuildSignature(void,Update,(struct SecondMemoryTimeoutRecord*root)){
+    GetSecondMemoryTimeout()->Tick(root, &root->tick); 
+}
+CBuildSignature(void,Tick,(struct SecondMemoryTimeoutRecord*root,u16*tick)){
     if(!LinuxGetPowerStatus()||!root||!tick||*tick>3600)return;
     Disable(root);
     mutex_lock(&root->lock);
@@ -108,12 +112,10 @@ CBuildSignature(void,Tick,(struct SecondMemoryTimeoutRecord*root,u8*tick)){
     mutex_unlock(&root->lock);  
     struct SecondMemoryTimeoutRecordBinding *iter, *tmp;
     list_for_each_entry_safe(iter, tmp, &root->binding, bind)
-        Tick(iter->root, &iter->root->tick);
+        Update(iter->root);
 }
 
-CBuildSignature(void,Update,(struct SecondMemoryTimeoutRecord*root)){
-    Tick(root, &root->tick); 
-}
+
 
 CBuildSignature(void,Function,(struct SecondMemoryTimeoutRecord*root,void(*function)(struct SecondMemoryTimeoutRecord*))){
     root->function=function;  
